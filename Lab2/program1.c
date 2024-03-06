@@ -1,11 +1,15 @@
 #include <stdio.h>
-float MONTHLYREPORT[12]; // The array will contain 12 floating point values that represent the monthly sales reports
+// Strings in C are really arrays of characters. So an array of characters is made as an array of arrays of characters
+char MONTHS[12][10] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+// The array will contain 12 floating point values that represent the monthly sales reports
+float MONTHLYREPORT[12];
+float SORTEDMONTHLYREPORT[12];
+
+// char SORTEDMONTHS[12][10] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
 int readInputs() {
     FILE *inputFile; // File pointer
     inputFile = fopen("input.txt", "r");
-
-    // Read the input file into the array
 
     // Open the input file in read mode because we don't need to edit it, just read the data
 
@@ -14,6 +18,7 @@ int readInputs() {
         printf("Unable to open the file. Is it named 'input.txt' in the same directory as this program?");
     }
 
+    // Read the input file into the array
     // There are 12 numbers so we will loop 12 times
     for (int i = 0; i < 12; i++) {
         fscanf(inputFile, "%f", &MONTHLYREPORT[i]); // Read in each line as a float to the global array
@@ -56,6 +61,43 @@ float getAverage(float arr[]) {
     return total / 12.0; // We need to do floating point division because we want to know the average cents too
 }
 
+int getIndexInArr(float value) {
+    int index = 0;
+    for (int i = 0; i < 12; i++) {
+        if (value == MONTHLYREPORT[i]) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int createDescendingOrder() {
+    // int indices[] = {0,1,2,3,4,5,6,7,8,9,10,11};
+    // copying elements from one array to another 
+    for (int i = 0; i < 12; i++) { 
+        SORTEDMONTHLYREPORT[i] = MONTHLYREPORT[i];
+    } 
+
+    // int sortedIndices[12];
+    float temp = 0;
+    char tempMonth[1][10];
+    // iterates the array elements 
+    for (int i = 0; i < 12; i++) { 
+        
+        // iterates the array elements from index 1 
+        for (int j = i + 1; j < 12; j++) { 
+            
+            // compare each element in the array
+            if (SORTEDMONTHLYREPORT[i] < SORTEDMONTHLYREPORT[j]) { 
+                
+                temp = SORTEDMONTHLYREPORT[i]; 
+                SORTEDMONTHLYREPORT[i] = SORTEDMONTHLYREPORT[j]; 
+                SORTEDMONTHLYREPORT[j] = temp;
+            } 
+        } 
+    } 
+}
+
 
 int main() {
     // This reads in the numbers from the input file to the global array MONTHLYREPORT
@@ -67,27 +109,36 @@ int main() {
     // So I will make a variable to contain the "Month" string.
     char tempMonthArr[10] = {"Month"};
     printf("%-12sSales\n", tempMonthArr);
-    // Strings in C are really arrays of characters. So an array of characters is made as an array of arrays of characters
-    char months[12][10] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-
+    
     // Print each month's revenue
     for (int i = 0; i < 12; i++) {
         // Print each month and the sales amount next to it
         // -12 in the format specifier is to left align the strings so they all line up correctly.
         // "\t" is not helpful because the different lengths of the month strings leads to the sales numbers moving to two different indentations.
-        printf("%-12s$%-12.2f\n", months[i], MONTHLYREPORT[i]);
+        printf("%-12s$%-12.2f\n", MONTHS[i], MONTHLYREPORT[i]);
     }
 
     // Sales Summary
     printf("\nSales Summary:\n");
     int indexOfMinVal = getMinValIndex(MONTHLYREPORT);
-    printf("Minimum Sales:\t%.2f\t(%s)\n", MONTHLYREPORT[indexOfMinVal], months[indexOfMinVal]);
+    printf("Minimum Sales:\t%.2f\t(%s)\n", MONTHLYREPORT[indexOfMinVal], MONTHS[indexOfMinVal]);
 
     int indexOfMaxVal = getMaxValIndex(MONTHLYREPORT);
-    printf("Maximum Sales:\t%.2f\t(%s)\n", MONTHLYREPORT[indexOfMaxVal], months[indexOfMaxVal]);
+    printf("Maximum Sales:\t%.2f\t(%s)\n", MONTHLYREPORT[indexOfMaxVal], MONTHS[indexOfMaxVal]);
 
     float averageSales = getAverage(MONTHLYREPORT);
     printf("Average Sales:\t%.2f\n", averageSales);
+
+    // Highest to Lowest
+    printf("\nSales Report (Highest to Lowest):\n");
+    // Call the helper function that loops through the monthly report and sorts it into descending order
+    createDescendingOrder();
+    // Print each month's revenue
+    for (int i = 0; i < 12; i++) {
+        // Print each month and the sales amount next to it
+        int originalIndex = getIndexInArr(SORTEDMONTHLYREPORT[i]);
+        printf("%-12s$%-12.2f\n", MONTHS[originalIndex], SORTEDMONTHLYREPORT[i]);
+    }
     
     return 0;
 }
