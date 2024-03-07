@@ -53,12 +53,12 @@ int getMaxValIndex(float arr[]) {
 }
 
 // This function takes an array of floats, loops through them comparing each value, and then returns the index of the smallest value in the array
-float getAverage(float arr[]) {
+float getAverage(float arr[], int length) {
     float total = 0;
-    for (int i = 0; i < 12; i++) {        
+    for (int i = 0; i < length; i++) {        
         total += arr[i];
     }
-    return total / 12.0; // We need to do floating point division because we want to know the average cents too
+    return total / (float) length; // We need to do floating point division because we want to know the average cents too
 }
 
 int getIndexInArr(float value) {
@@ -98,7 +98,6 @@ int createDescendingOrder() {
     } 
 }
 
-
 int main() {
     // This reads in the numbers from the input file to the global array MONTHLYREPORT
     readInputs();
@@ -121,13 +120,22 @@ int main() {
     // Sales Summary
     printf("\nSales Summary:\n");
     int indexOfMinVal = getMinValIndex(MONTHLYREPORT);
-    printf("Minimum Sales:\t%.2f\t(%s)\n", MONTHLYREPORT[indexOfMinVal], MONTHS[indexOfMinVal]);
+    printf("Minimum Sales:\t$%.2f\t(%s)\n", MONTHLYREPORT[indexOfMinVal], MONTHS[indexOfMinVal]);
 
     int indexOfMaxVal = getMaxValIndex(MONTHLYREPORT);
-    printf("Maximum Sales:\t%.2f\t(%s)\n", MONTHLYREPORT[indexOfMaxVal], MONTHS[indexOfMaxVal]);
+    printf("Maximum Sales:\t$%.2f\t(%s)\n", MONTHLYREPORT[indexOfMaxVal], MONTHS[indexOfMaxVal]);
 
-    float averageSales = getAverage(MONTHLYREPORT);
-    printf("Average Sales:\t%.2f\n", averageSales);
+    float averageSales = getAverage(MONTHLYREPORT, 12);
+    printf("Average Sales:\t$%.2f\n", averageSales);
+    
+    printf("\nSix-Month Moving Average Report:\n");
+    for (int i = 0; i < 7; i++) {
+        // Print out the moving average for 6 month intervals shifting by 1 month each time
+        // Rather than creating an element-wise copy of MONTHLYREPORT for all 7 subsets,
+        // we can use pointer arithmetic to intelligently shift the starting memory address of MONTHLYREPORT.
+        // Then we tell the getAverage function to only take the first 6 values from the array.
+        printf("%-12s-\t%-12s%.2f\n", MONTHS[i], MONTHS[i+5], getAverage((MONTHLYREPORT + i), 6));
+    }
 
     // Highest to Lowest
     printf("\nSales Report (Highest to Lowest):\n");
