@@ -56,6 +56,7 @@ int sumMatrices(int* mat1, int* mat2, int* result, int matrixSize) {
 }
 
 // 4. MULTIPLY MATRICES
+// Matrix multiplication is complicated and the pointer arithmetic only makes it look worse.
 int multMatrices(int* mat1, int* mat2, int* result, int matrixSize) {
     for (int i = 0; i < matrixSize; i++) {
         for (int j = 0; j < matrixSize; j++) {
@@ -64,8 +65,22 @@ int multMatrices(int* mat1, int* mat2, int* result, int matrixSize) {
             
             for (int k = 0; k < matrixSize; k++) {
                 // Performs result[i][j] += mat1[i][k] * mat2[k][j];
-                *((result + i*matrixSize)+j) += *((mat1 + i*matrixSize)+k) * *((mat2+k*matrixSize)+j);
+                *((result + i*matrixSize)+j) += *((mat1 + i*matrixSize)+k) * *((mat2+k*matrixSize)+j); // this statement uses * as both the dereference and multiplication operator
             }
+        }
+    }
+    return 0;
+}
+
+// 5. SUBTRACT MATRICES
+// Note the order it performs subtraction in: mat1 - mat2
+// Matrix subtraction is done element wise
+int subMatrices(int* mat1, int* mat2, int* result, int matrixSize) {
+    for(int i = 0; i < matrixSize; i++) {
+        for (int j = 0; j < matrixSize; j++) {
+            // In execution, this performs
+            // result[i][j] = mat1[i][j] - mat2[i][j];
+            *((result + i*matrixSize)+j) = *((mat1 + i*matrixSize)+j) - *((mat2 + i*matrixSize)+j);
         }
     }
     return 0;
@@ -74,7 +89,7 @@ int multMatrices(int* mat1, int* mat2, int* result, int matrixSize) {
 int main() {
     // Open the file containing the matrices
     ifstream infile;
-    infile.open("matrix.txt", ifstream::in);
+    infile.open("matrix_input.txt", ifstream::in);
 
     // Get the size of the matrices by reading the first line of the file.
     // Note that it will read in the value without whitespace to the matrixSize variable.
@@ -106,6 +121,17 @@ int main() {
     multMatrices(*matA, *matB, *prodMat, matrixSize);
     cout << "\nMatrix 1 * Matrix 2: \n";
     printMatrix(*prodMat, matrixSize);
+
+    // 5. SUBTRACT MATRICES AND PRINT RESULT
+    int diffMat[matrixSize][matrixSize];
+    // The instructions say to do (matrix 2) - (matrix 1)
+    // I set up my function such that it performs (first argument) - (second argument)
+    // So I will pass matB and then matA
+    subMatrices(*matB, *matA, *diffMat, matrixSize);
+    cout << "\nMatrix 2 - Matrix 1: \n";
+    printMatrix(*diffMat, matrixSize);
+
+
 
     return 0;
 }
