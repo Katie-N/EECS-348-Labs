@@ -2,28 +2,7 @@
 #include <fstream>
 using namespace std;
 
-// void mulMat(int mat1[][C1], int mat2[][C2])
-// {
-//     int rslt[R1][C2];
-
-//     cout << "Multiplication of given two matrices is:\n";
-
-//     for (int i = 0; i < R1; i++) {
-//         for (int j = 0; j < C2; j++) {
-//             rslt[i][j] = 0;
-
-//             for (int k = 0; k < R2; k++) {
-//                 rslt[i][j] += mat1[i][k] * mat2[k][j];
-//             }
-
-//             cout << rslt[i][j] << "\t";
-//         }
-
-//         cout << endl;
-//     }
-// }
-
-
+// 1. READ MATRIX FROM FILE
 // This function takes in a pointer to a square matrix that has been allocated already.
 // It also takes in the size of the matrix so it knows how many times to loop.
 // Finally it takes in the address of the file containing the matrix.
@@ -54,6 +33,16 @@ int readMatrix(int* mat, int matrixSize, ifstream &infile) {
     return 0;
 }
 
+// 2. PRINT MATRIX
+void printMatrix(int* mat, int matrixSize) {
+    for (int i = 0; i < matrixSize; i++) {
+        for (int j = 0; j < matrixSize; j++) {
+            cout << *((mat + i * matrixSize) + j) << "\t";
+        }
+        cout << "\n";
+    }
+}
+
 // 3. SUM TWO MATRICES FUNCTION
 int sumMatrices(int* mat1, int* mat2, int* result, int matrixSize) {
     for(int i = 0; i < matrixSize; i++) {
@@ -66,13 +55,20 @@ int sumMatrices(int* mat1, int* mat2, int* result, int matrixSize) {
     return 0;
 }
 
-void printMatrix(int* mat, int matrixSize) {
+// 4. MULTIPLY MATRICES
+int multMatrices(int* mat1, int* mat2, int* result, int matrixSize) {
     for (int i = 0; i < matrixSize; i++) {
         for (int j = 0; j < matrixSize; j++) {
-            cout << *((mat + i * matrixSize) + j) << "\t";
+            // Performs result[i][j] = 0;
+            *((result + i*matrixSize)+j) = 0;
+            
+            for (int k = 0; k < matrixSize; k++) {
+                // Performs result[i][j] += mat1[i][k] * mat2[k][j];
+                *((result + i*matrixSize)+j) += *((mat1 + i*matrixSize)+k) * *((mat2+k*matrixSize)+j);
+            }
         }
-        cout << "\n";
     }
+    return 0;
 }
 
 int main() {
@@ -85,22 +81,31 @@ int main() {
     int matrixSize;
     infile >> matrixSize;
 
-    // Initialize the matrices with the proper sizes
-    int matA[matrixSize][matrixSize];
-    int matB[matrixSize][matrixSize];
-
+    // 1. READ MATRICES FROM FILE
     // Read in values to the first matrix by passing a pointer to the function
+    int matA[matrixSize][matrixSize];
     readMatrix(*matA, matrixSize, infile);
     // Read in values to the second matrix by passing a pointer to the function
+    int matB[matrixSize][matrixSize];
     readMatrix(*matB, matrixSize, infile);
-    
-    // 3. SUM MATRICES
+
+    // 2. PRINT THE INPUTTED MATRICES
+    cout << "Matrix 1: \n";
+    printMatrix(*matA, matrixSize);
+    cout << "\nMatrix 2: \n";
+    printMatrix(*matB, matrixSize);
+
+    // 3. SUM MATRICES AND PRINT RESULT
     int sumMat[matrixSize][matrixSize];
     sumMatrices(*matA, *matB, *sumMat, matrixSize);
-
-    cout << "Matrix 1: \n";
+    cout << "\nMatrix 1 + Matrix 2: \n";
     printMatrix(*sumMat, matrixSize);
-    // mulMat(mat1, mat2);
+
+    // 4. MULTIPLY MATRICES AND PRINT RESULT
+    int prodMat[matrixSize][matrixSize];
+    multMatrices(*matA, *matB, *prodMat, matrixSize);
+    cout << "\nMatrix 1 * Matrix 2: \n";
+    printMatrix(*prodMat, matrixSize);
 
     return 0;
 }
