@@ -1,5 +1,7 @@
 #include <iostream>
 #include <fstream>
+#include <string>
+#include <stdexcept>
 using namespace std;
 
 // 1. READ MATRIX FROM FILE
@@ -86,6 +88,59 @@ int subMatrices(int* mat1, int* mat2, int* result, int matrixSize) {
     return 0;
 }
 
+// I adapted this helper function from a StackOverflow question: https://stackoverflow.com/a/22818771
+// This function is used to validate the input from the user when updating a matrix.
+bool validateInput(string& input, int& output) {
+    try {
+        output = stoi(input);
+    } catch (invalid_argument) {
+        return false;
+    }
+    return true;
+}
+
+
+// 6. UPDATE MATRIX
+int updateMatrix(int* mat, int matrixSize) {
+    // Get input from user
+
+    // Validate row and columns are within 0 <= input <= matrixSize
+    bool valid = false;
+    cout << "The matrix is " << matrixSize << "x" << matrixSize << ". So you must enter a number between 1 and " << matrixSize << "\n";
+
+    // row and col are strings to hold the unsanitized user input
+    string row;
+    string col;
+    // x and y are ints to hold the validated integer values once valid inputs are given
+    int x;
+    int y;
+
+    // Get the row from the user
+    cout << "Enter the row: ";
+    getline(cin, row);
+    
+    // If the input is not a digit, or if the input is a digit but it is not within 0 and matrixSize, we will continue prompting the user.
+    while (!validateInput(row, x) || x < 1 || x > matrixSize) {
+        cout << "Please enter a number between 0 and " << matrixSize << ": ";
+        getline(cin, row);
+    }
+
+    // Get the column from the user
+    cout << "Enter the column: ";
+    getline(cin, col);
+
+    // If the input is not a digit, or if the input is a digit but it is not within 0 and matrixSize, we will continue prompting the user.
+    while (!validateInput(col, y) || y < 1 || y > matrixSize) {
+        cout << "Please enter a number between 0 and " << matrixSize << ": ";
+        getline(cin, col);
+    }
+
+    // NOTE: If the user enters a float it will be accepted as valid and when it is implicitly cast to an int, it will be rounded down to the nearest integer.
+    // The user is expected to begin counting at row 1 and column 1 (not row 0 and column 0) so we must subtract 1 from the integers to get back to 0-based indexing.
+    cout << "The current value at matrix[" << x << "][" << y << "] is " << *((mat + (x-1)*matrixSize)+(y-1)) << "\n";
+    return 0;
+}
+
 int main() {
     // Open the file containing the matrices
     ifstream infile;
@@ -131,7 +186,8 @@ int main() {
     cout << "\nMatrix 2 - Matrix 1: \n";
     printMatrix(*diffMat, matrixSize);
 
-
+    // 6. UPDATE MATRIX
+    updateMatrix(*matA, matrixSize);
 
     return 0;
 }
