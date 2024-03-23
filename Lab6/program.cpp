@@ -138,6 +138,21 @@ int updateMatrix(int* mat, int matrixSize) {
     // NOTE: If the user enters a float it will be accepted as valid and when it is implicitly cast to an int, it will be rounded down to the nearest integer.
     // The user is expected to begin counting at row 1 and column 1 (not row 0 and column 0) so we must subtract 1 from the integers to get back to 0-based indexing.
     cout << "The current value at matrix[" << x << "][" << y << "] is " << *((mat + (x-1)*matrixSize)+(y-1)) << "\n";
+    
+    // Get new matrix value
+    string newValDirty;
+    int newVal;
+    cout << "Enter the new value: ";
+    getline(cin, newValDirty);
+    while (!validateInput(newValDirty, newVal)){
+	cout << "Please enter a number! ";
+	getline(cin, newValDirty);
+    }
+
+    // Update Matrix
+    *((mat + (x-1)*matrixSize)+(y-1)) = newVal;
+    cout << "The new matrix is: \n";
+    printMatrix(mat, matrixSize);
     return 0;
 }
 
