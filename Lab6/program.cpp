@@ -156,6 +156,22 @@ int updateMatrix(int* mat, int matrixSize) {
     return 0;
 }
 
+// 7. GET MAX ELEMENT
+int getMax(int* mat, int matrixSize){
+	int maxElement = *(mat); // Initialize the max element with the value in mat[0][0]
+	// Loop through rows
+	for (int i = 0; i < matrixSize; i++) {
+		// Loop through columns
+		for (int j = 0; j < matrixSize; j++) {
+			int currentVal = *((mat + i*matrixSize)+j);
+			if (currentVal > maxElement) {
+				maxElement = currentVal;
+			}
+		}
+	}
+	return maxElement;
+}
+
 int main() {
     // Open the file containing the matrices
     ifstream infile;
@@ -203,6 +219,9 @@ int main() {
 
     // 6. UPDATE MATRIX
     updateMatrix(*matA, matrixSize);
-
+	
+    // 7. GET MAX ELEMENT IN MATRIX
+    cout << "The biggest value in Matrix 1 is: " << getMax(*matA, matrixSize) << endl;
+    
     return 0;
 }
