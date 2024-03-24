@@ -106,6 +106,7 @@ int updateMatrix(int* mat, int matrixSize) {
 
     // Validate row and columns are within 0 <= input <= matrixSize
     bool valid = false;
+    cout << "\n6. Update Matrix 1: \n";
     cout << "The matrix is " << matrixSize << "x" << matrixSize << ". So you must enter a number between 1 and " << matrixSize << "\n";
 
     // row and col are strings to hold the unsanitized user input
@@ -164,12 +165,27 @@ int getMax(int* mat, int matrixSize){
 		// Loop through columns
 		for (int j = 0; j < matrixSize; j++) {
 			int currentVal = *((mat + i*matrixSize)+j);
+			// If the current value is bigger than the current maximum value, reassign the max element
 			if (currentVal > maxElement) {
 				maxElement = currentVal;
 			}
 		}
 	}
+	// Every value has been looped through so maxElement must contain the max element of the matrix
 	return maxElement;
+}
+
+// 8. TRANSPOSE MATRIX
+int transposeMatrix(int* mat, int* transMat, int matrixSize) {
+	for(int i = 0; i < matrixSize; i++) {
+		for (int j = 0; j < matrixSize; j++) {
+			// Transpose switches the columns and rows in a matrix
+			// If we loop through the number of rows and columns in the matrix
+			// we can assign transMat[j][i] = mat[i][j] which is the definition of transpose.
+			*((transMat + j*matrixSize)+i) = *((mat + i*matrixSize)+j);
+		}
+	}
+	return 0;
 }
 
 int main() {
@@ -199,13 +215,13 @@ int main() {
     // 3. SUM MATRICES AND PRINT RESULT
     int sumMat[matrixSize][matrixSize];
     sumMatrices(*matA, *matB, *sumMat, matrixSize);
-    cout << "\nMatrix 1 + Matrix 2: \n";
+    cout << "\n3. Matrix 1 + Matrix 2: \n";
     printMatrix(*sumMat, matrixSize);
 
     // 4. MULTIPLY MATRICES AND PRINT RESULT
     int prodMat[matrixSize][matrixSize];
     multMatrices(*matA, *matB, *prodMat, matrixSize);
-    cout << "\nMatrix 1 * Matrix 2: \n";
+    cout << "\n4. Matrix 1 * Matrix 2: \n";
     printMatrix(*prodMat, matrixSize);
 
     // 5. SUBTRACT MATRICES AND PRINT RESULT
@@ -214,14 +230,20 @@ int main() {
     // I set up my function such that it performs (first argument) - (second argument)
     // So I will pass matB and then matA
     subMatrices(*matB, *matA, *diffMat, matrixSize);
-    cout << "\nMatrix 2 - Matrix 1: \n";
+    cout << "\n5. Matrix 2 - Matrix 1: \n";
     printMatrix(*diffMat, matrixSize);
 
     // 6. UPDATE MATRIX
     updateMatrix(*matA, matrixSize);
 	
     // 7. GET MAX ELEMENT IN MATRIX
-    cout << "The biggest value in Matrix 1 is: " << getMax(*matA, matrixSize) << endl;
+    cout << "\n 7. The biggest value in Matrix 1 is: " << getMax(*matA, matrixSize) << endl;
     
+    // 8. TRANSPOSE AND PRINT MATRIX 1
+    cout << "\n 8. Transpose and print Matrix 1:\n";
+    int transMat[matrixSize][matrixSize];
+    transposeMatrix(*matA, *transMat, matrixSize);
+    printMatrix(*transMat, matrixSize);
+
     return 0;
 }
